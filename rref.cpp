@@ -151,7 +151,45 @@ extern "C" {
         memcpy( data, nullspace, sizeof(nullspace) ) ;
         return numFreeVariables ;
     }
-    
+
+
+    int colspace( double *data, const size_t M, const size_t N ) {
+        double tmp[M*N] ;
+        memcpy( tmp, data, sizeof(tmp) ) ;
+
+        rref( data, M, N ) ;
+        int pivots[N] ;
+
+        int numPivots = 0 ;        
+        int lead = 0 ;
+        double *p = data ;
+        for( int i=0 ; i<N && i<M; i++ ) {
+            if( abs(*p) > 1e-11 ) {
+                pivots[numPivots] = lead ;
+                numPivots++ ;
+                p += M+1 ; // skip down diagonal
+                lead++ ;
+            } else {
+                while( abs(*p) < 1e-11 ) {
+                    p += M ;
+                    lead++ ;
+                    if( lead >= N ) goto escape ;
+                }
+            }
+        }
+        escape:
+        
+        double *d = data ;
+        for( int i=0 ; i<numPivots ; i++ ) {
+            double *s = tmp + M*pivots[i] ;
+            for( int j=0 ; j<M ; j++ ) {
+                *d++ = *s++ ;
+            }
+        }
+        return numPivots ;
+    }
+
+
     void matprint( double *data, int M, int N ) {
         double *p = data ;
         for( int r=0 ; r<M ; r++ ) { 

@@ -31,6 +31,10 @@ int main( int argc, char **argv, char **envp ) {
     int freeVars = nullspace( data, M, N ) ;
     matprint( data, N, freeVars ) ;
 
+    double data2[] = { -3,1,2,   6,-2,-4,  -1,2,5,  1,3,8,  -7,-1,-4 } ;
+    int pivots = colspace( data2, M, N ) ;
+    matprint( data2, M, pivots ) ;
+
     return 0 ;
 }
 
